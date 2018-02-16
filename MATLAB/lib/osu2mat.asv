@@ -1,0 +1,52 @@
+function mat = osu2mat(osufile_id)
+%osu2mat Converts .osu file to a matrix for MATLAB
+%   Input: file ID for .osu file. You can get this by using fopen('osu file
+%   directory')
+%   Output: array of hit objects
+
+end_check = 0;
+meta_data_area = 0;
+hit_obj_area = 0;
+time_point_area = 0;
+map = Map();
+meta_str = str(1);
+while ~end_check
+    tline = fgetl(osufile_id);
+    
+    
+    % only nonempty lines
+    if ~isempty(tline) && ~isa(tline, 'double')
+        
+        if meta_data_area
+        end
+        
+        if hit_obj_area
+            disp(tline);
+        end
+        
+        if contains(tline,'[General]')
+            meta_data_area = 1; % starting next line
+        elseif contains(tline,'[Events]')
+            meta_data_area = 0; % starting next line
+        end
+        
+        % check that [TimingPoints] has passed
+        if contains(tline,'[TimingPoints]')
+            time_point_area = 1;
+        end
+        
+        % check that [HitObjects] has passed
+        if contains(tline,'[HitObjects]')
+            time_point_area = 0;
+            hit_obj_area = 1;
+        end
+    end
+    % end line check
+    if tline == -1
+        end_check = 1;
+    end
+end
+fclose(osufile_id);
+
+end
+
