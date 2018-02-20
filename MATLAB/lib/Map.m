@@ -12,11 +12,11 @@ classdef Map < handle
         ApproachRate
         SliderTickRate
         BaseSliderMultiplier % slider multiplier for whole map
-        
         Offset % time point offset
         BeatDuration % duration for each new time point
         SliderMultiplier % multiplier on top of base slider multiplier
         Meter % 1/4 or 1/6 or 1/3 per time point. 1/4 = 4 here
+        
     end
     
     methods
@@ -47,6 +47,23 @@ classdef Map < handle
                     obj.SliderTickRate = str2double(line_str(strfind(line_str,':')+1:end));
                 else
                 end
+            end
+        end
+        
+        function dist = timeDist(obj,h_obj1, h_obj2, varargin)
+            %   calculates time relative distance between two objects
+            %   taking into account hit window in both space and time
+            %   inputs:
+            %       hit object 1
+            %       hit object 2
+            %       other inputs (ppv2?)
+            x1 = h_obj1.X; y1 = h_obj1.Y; x2 = h_obj2.X; y2 = h_obj2.Y;
+            cs = obj.CircleSize;
+            od = obj.OverallDifficulty;
+            if nargin < 3
+                ppv2 = 0;
+            else
+                ppv2 = varargin{1};
             end
         end
     end
