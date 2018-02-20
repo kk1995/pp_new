@@ -59,7 +59,7 @@ if circle == 2
     slider_struct.t = t0;
     slider_struct.x = x;
     slider_struct.y = y;
-    [slider_struct.ticks,slider_struct.end_point] = curvePoints2ticks(slider_struct,map.SliderTickRate);
+    [slider_struct.ticks] = curvePoints2ticks(slider_struct,map.SliderTickRate);
 end
 
 h_obj = HitObject(x,y,t0,circle);
@@ -67,27 +67,37 @@ if circle == 1
     h_obj.Slider = 0;
     h_obj.Spinner = 0;
     h_obj.Tick = 0;
+    h_obj.End = 0;
 elseif circle == 2
     h_obj.Slider = 1;
     h_obj.Spinner = 0;
     h_obj.Tick = 0;
-    for object = 1:size(slider_struct.ticks,1)+1
-        if object < size(slider_struct.ticks,1)+1
-            x = slider_struct.ticks(object,1);
-            y = slider_struct.ticks(object,2);
+    h_obj.End = 0;
+    for object = 1:size(slider_struct.ticks,1)
+        x = slider_struct.ticks(object,1);
+        y = slider_struct.ticks(object,2);
+        if object < size(slider_struct.ticks,1)
             t = beat_duration/map.SliderTickRate*object + t0;
         else
-            x = slider_struct.end_point(1);
-            y = slider_struct.end_point(2);
             t = slider_struct.duration/map.SliderTickRate + t0;
         end
         h_obj_temp = HitObject(x,y,t,circle);
         h_obj_temp.Slider = 1;
         h_obj_temp.Spinner = 0;
-        h_obj_temp.Tick = 1;
+        if object == size(slider_struct.ticks,1)
+            h_obj_temp.End = 1;
+            h_obj_temp.Tick = 0;
+        else
+            h_obj_temp.End = 0;
+            h_obj_temp.Tick = 1;
+        end
         h_obj = [h_obj h_obj_temp];
     end
-    
+else
+    h_obj.Slider = 0;
+    h_obj.Spinner = 1;
+    h_obj.Tick = 0;
+    h_obj.End = 0;
 end
 
 end

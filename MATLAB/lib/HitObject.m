@@ -9,6 +9,7 @@ classdef HitObject
         Slider
         Spinner
         Tick
+        End
     end
     
     methods
