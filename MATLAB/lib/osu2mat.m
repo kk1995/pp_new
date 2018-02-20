@@ -84,7 +84,6 @@ while ~end_check
         end_check = 1;
     end
 end
-fclose(osufile_id);
 
 end
 

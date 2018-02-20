@@ -1,6 +1,7 @@
 classdef Map < handle
-    %UNTITLED6 Summary of this class goes here
-    %   Detailed explanation goes here
+    %Map Class for osu! standard map object
+    %   This includes information about the map that applies to the whole
+    %   map, or sections of the map.
     
     properties
         StackLeniency

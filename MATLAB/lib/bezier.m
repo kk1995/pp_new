@@ -1,33 +1,26 @@
-function slider_points = bezier(a,b,c)
-%BEZIER Summary of this function goes here
+function [slider_points, dist] = bezier(points)
+%BEZIER Building bezier curve from n points in nx2 form
 %   Detailed explanation goes here
-    aSq = sum((b - c).^2); bSq = sum((a - c).^2); cSq = sum((a - b).^2);
-    s = aSq * (bSq + cSq - aSq); t = bSq * (aSq + cSq - bSq); u = cSq * (aSq + bSq - cSq);
-    sum_dist = s + t + u;
-    centre = (s * a + t * b + u * c) / sum_dist;
-    dA = a - centre; dC = c - centre;
-    r = sqrt(sum(dA.^2));
-    thetaStart = atan2(dA(2), dA(1));
-    thetaEnd = atan2(dC(2), dC(1));
-    while thetaEnd < thetaStart
-        thetaEnd = thetaEnd + 2*pi;
+
+amountPoints = 1001;
+n = size(points,1);
+n1=n-1;
+sigma = nan(n1+1,1);
+for i=0:1:n1
+    sigma(i+1)=factorial(n1)/(factorial(i)*factorial(n1-i));  % for calculating (x!/(y!(x-y)!)) values
+end
+l=[];
+UB=[];
+for u=linspace(0,1,amountPoints)
+    for d=1:n
+        UB(d)=sigma(d)*((1-u)^(n-d))*(u^(d-1));
     end
-    dir = 1;
-    thetaRange = thetaEnd - thetaStart;
-    orthoAtoC = c - a; % direction
-    orthoAtoC = [orthoAtoC(2) -orthoAtoC(1)];
-    if dot(orthoAtoC,(b-a)) < 0
-        dir = -dir;
-        thetaRange = 2*pi - thetaRange;
-    end
-    amountPoints = 1001;
-    slider_points = nan(amountPoints,2);
-    for i = 1:amountPoints
-        fract = (i-1)/(amountPoints-1);
-        theta = thetaStart + dir * fract * thetaRange;
-        slider_points(i,:) = [cos(theta) sin(theta)]*r;
-    end
-    slider_points(:,1) = slider_points(:,1) - slider_points(1,1) + a(1);
-    slider_points(:,2) = slider_points(:,2) - slider_points(1,2) + a(2);
+    l=cat(1,l,UB);                                      %catenation
+end
+slider_points = l*points;
+
+x_diff = diff(slider_points(:,1));
+y_diff = diff(slider_points(:,2));
+dist = sum(sqrt(x_diff.^2 + y_diff.^2));
 end
 
