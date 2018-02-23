@@ -51,8 +51,9 @@ if circle == 2
     else
         slider_struct.pixel_length = str2double(linestr(comma_loc(7)+1:end)); % length of slider
     end
-    beat_duration = map.BeatDuration(find(map.Offset>t0,1)-1);
-    slider_multiplier = map.BaseSliderMultiplier*map.SliderMultiplier(find(map.Offset>t0,1)-1);
+    offset_ind = find(map.Offset<=t0,1,'last');
+    beat_duration = map.BeatDuration(offset_ind);
+    slider_multiplier = map.BaseSliderMultiplier*map.SliderMultiplier(offset_ind);
     slider_struct.duration = slider_struct.pixel_length / (100.0 * slider_multiplier) * beat_duration;
     slider_struct.beat_duration = beat_duration;
     slider_struct.slider_multiplier = slider_multiplier;

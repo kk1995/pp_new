@@ -78,7 +78,7 @@ for tick = 1:tick_num
     % won't affect the difficulty value that much, but should eventually fix.
 end
 tickBeatT = 1/tick_rate*(1:size(tick_list,1));
-
+tickBeatT = tickBeatT';
 % find end point location
 dist2end = repeat_dist;
 dist_left = dist2end;
@@ -121,7 +121,7 @@ while repeat_count <= slider_struct.repeat
         if repeat_count == slider_struct.repeat
             tickXY = [tickXY; tick_list(size(tick_list,1):-1:1,:) tickBeatT(end:-1:1)];
             start_beat = start_beat + repeatBeatT;
-            endXY = [slider_struct.x slider_struct.y start_beat];
+            endXY = [slider_struct.x slider_struct.y start_beat - 0.030]; % -0.03 because of leniency (seems to be around 30 ms? not sure)
         else
             tickXY = [tickXY; tick_list(size(tick_list,1):-1:1,:) tickBeatT(end:-1:1)];
             start_beat = start_beat + repeatBeatT;
@@ -131,7 +131,7 @@ while repeat_count <= slider_struct.repeat
         if repeat_count == slider_struct.repeat
             tickXY = [tickXY; tick_list tickBeatT];
             start_beat = start_beat + repeatBeatT;
-            endXY = [repeat_point start_beat];
+            endXY = [repeat_point start_beat - 0.030]; % -0.03 because of leniency (seems to be around 30 ms? not sure)
         else
             tickXY = [tickXY; tick_list tickBeatT];
             start_beat = start_beat + repeatBeatT;

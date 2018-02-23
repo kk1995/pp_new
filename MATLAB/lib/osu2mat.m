@@ -71,7 +71,6 @@ while ~end_check
         end
         
         if hit_obj_area
-            disp(tline);
             h_obj = line2hitobj(tline,map);
             h_obj_list = [h_obj_list h_obj];
         end

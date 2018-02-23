@@ -73,7 +73,14 @@ classdef Map < handle
                 end
                 
                 space_dist_no_cs = sqrt((x2-x1)^2 + (y2-y1)^2);
-                time_diff = obj.timeDiff(h_obj1, h_obj2, ppv2);
+                radius1 = obj.cs2radius(h_obj1);
+                radius2 = obj.cs2radius(h_obj2);
+%                 space_dist_no_cs = space_dist_no_cs - radius1 - radius2;
+                if space_dist_no_cs < 0
+                    space_dist_no_cs = 0;
+                end
+%                 time_diff = obj.timeDiff(h_obj1, h_obj2, ppv2);
+                time_diff = t2 - t1; time_diff = time_diff/1000;
                 
                 dist = space_dist_no_cs/time_diff;
             end
@@ -85,6 +92,7 @@ classdef Map < handle
             %       hit object 1
             %       hit object 2
             %       other inputs (ppv2?)
+            %   in seconds
             
             if h_obj1.Spinner == 1 || h_obj2.Spinner == 1 % if one of the objects is a spinner
                 time_diff = nan;
@@ -100,22 +108,28 @@ classdef Map < handle
                 end
                 [three_hundred, ~, ~] = obj.od2window(h_obj1);
                 [three_hundred2, ~, ~] = obj.od2window(h_obj2);
-                time_diff = abs((t2 + three_hundred2(1)) - (t1 + three_hundred(2)));
+                time_diff = abs((t2 + three_hundred2(2)) - (t1 + three_hundred(1)));
             end
+            time_diff = time_diff/1000;
         end
         
         
         function radius = cs2radius(obj,h_obj)
             cs = obj.CircleSize;
             if h_obj.Slider == 1
-                if h_obj.tick == 0 && h_obj.repeat == 0 && h_obj.end == 0 % start of slider
+                if h_obj.Tick == 0 && h_obj.Repeat == 0 && h_obj.End == 0 % start of slider
                     radius = 109 - 9 * cs;
+                    radius = radius/2;
                 else
+                    radius = 109 - 9 * cs;
+                    radius = radius/2;
+                    radius = radius*2.4; % approximation value based on forum posts...
                 end
-            elseif h_obj.spinner == 1
-                radius = 512; % max size? I mean it is a spinner...
+            elseif h_obj.Spinner == 1
+                radius = 256; % max size? I mean it is a spinner...
             else % circle
                 radius = 109 - 9 * cs;
+                radius = radius/2;
             end
         end
         
@@ -196,19 +210,6 @@ classdef Map < handle
             else
                 
                 x1 = h_obj1.X; y1 = h_obj1.Y; x2 = h_obj2.X; y2 = h_obj2.Y;
-                t1 = h_obj1.T; t2 = h_obj2.T;
-                cs = obj.CircleSize;
-                od = obj.OverallDifficulty;
-                if nargin < 4
-                    ppv2 = 0;
-                else
-                    ppv2 = varargin{1};
-                end
-                
-                space_dist_no_cs = sqrt((x2-x1)^2 + (y2-y1)^2);
-                time_dist_no_od = abs(t2 - t1);
-                
-                dist = space_dist_no_cs/time_dist_no_od;
             end
         end
         
