@@ -78,11 +78,7 @@ elseif circle == 2
     for object = 1:size(slider_struct.ticks,1)
         x = slider_struct.ticks(object,1);
         y = slider_struct.ticks(object,2);
-        if object < size(slider_struct.ticks,1)
-            t = beat_duration/map.SliderTickRate*object + t0;
-        else
-            t = slider_struct.duration/map.SliderTickRate + t0;
-        end
+        t = slider_struct.ticks(object,3)*slider_struct.beat_duration + t0;
         h_obj_temp = HitObject(x,y,t,circle);
         h_obj_temp.Slider = 1;
         h_obj_temp.Spinner = 0;
@@ -94,11 +90,7 @@ elseif circle == 2
     for object = 1:size(slider_struct.repeats,1)
         x = slider_struct.repeats(object,1);
         y = slider_struct.repeats(object,2);
-        if object < size(slider_struct.repeats,1)
-            t = beat_duration/map.SliderTickRate*object + t0;
-        else
-            t = slider_struct.duration/map.SliderTickRate + t0;
-        end
+        t = slider_struct.repeats(object,3)*slider_struct.beat_duration + t0;
         h_obj_temp = HitObject(x,y,t,circle);
         h_obj_temp.Slider = 1;
         h_obj_temp.Spinner = 0;
@@ -107,13 +99,9 @@ elseif circle == 2
         h_obj_temp.Repeat = 1;
         h_obj = [h_obj h_obj_temp];
     end
-    x = slider_struct.end(object,1);
-    y = slider_struct.end(object,2);
-    if object < size(slider_struct.end,1)
-        t = beat_duration/map.SliderTickRate*object + t0;
-    else
-        t = slider_struct.duration/map.SliderTickRate + t0;
-    end
+    x = slider_struct.end(1);
+    y = slider_struct.end(2);
+    t = slider_struct.end(3)*slider_struct.beat_duration + t0;
     h_obj_temp = HitObject(x,y,t,circle);
     h_obj_temp.Slider = 1;
     h_obj_temp.Spinner = 0;
@@ -121,6 +109,15 @@ elseif circle == 2
     h_obj_temp.Tick = 0;
     h_obj_temp.Repeat = 0;
     h_obj = [h_obj h_obj_temp];
+    
+    % sort h_obj by time
+    time_list = nan(numel(h_obj),1);
+    for obj = 1:numel(h_obj)
+        time_list(obj) = h_obj(obj).T;
+    end
+    [~,I] = sort(time_list);
+    h_obj = h_obj(I);
+    
 else
     h_obj.Slider = 0;
     h_obj.Spinner = 1;
